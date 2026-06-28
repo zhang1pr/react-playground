@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react'
+import { Suspense } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { getProjectById } from './projects'
 import './ProjectView.css'
@@ -11,7 +11,7 @@ export default function ProjectView() {
     return <Navigate to="/" replace />
   }
 
-  const ProjectApp = lazy(project.load)
+  const ProjectApp = project.Component
 
   return (
     <div className="project-view">
@@ -19,6 +19,7 @@ export default function ProjectView() {
         <Link to="/">← All projects</Link>
         <span className="project-nav-title">{project.name}</span>
       </nav>
+
       <Suspense fallback={<p className="project-loading">Loading project…</p>}>
         <ProjectApp />
       </Suspense>

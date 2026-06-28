@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 
 const projectModules = import.meta.glob<{ default: ComponentType }>(
   './*/App.tsx',
@@ -7,13 +7,18 @@ const projectModules = import.meta.glob<{ default: ComponentType }>(
 export type Project = {
   id: string
   name: string
-  load: () => Promise<{ default: ComponentType }>
+  Component: LazyExoticComponent<ComponentType>
 }
 
 export const projects: Project[] = Object.entries(projectModules).map(
   ([path, load]) => {
     const id = path.match(/^\.\/(.+)\/App\.tsx$/)?.[1] ?? path
-    return { id, name: id, load }
+
+    return {
+      id,
+      name: id,
+      Component: lazy(load),
+    }
   },
 )
 

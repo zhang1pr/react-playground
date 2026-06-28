@@ -4,7 +4,7 @@ import './App.css'
 const randomHex = () => '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0').toUpperCase();
 
 function shuffle(array) {
-  let currentIndex = array.length;
+  let currentIndex: number = array.length;
 
   while (currentIndex != 0) {
     const randomIndex = Math.floor(Math.random() * currentIndex);
@@ -16,7 +16,7 @@ function shuffle(array) {
 function App() {
   const [hex, setHex] = useState(randomHex);
   const [streak, setStreak] = useState(0);
-  const [verdict, setVerdict] = useState('');
+  const [verdict, setVerdict] = useState(null);
 
   const options = [hex];
   while (options.length != 3) {
@@ -32,26 +32,28 @@ function App() {
 
     if (guess == hex) {
       setStreak(streak => streak + 1);
-      setVerdict('correct');
+      setVerdict(true);
     } else {
       setStreak(0);
-      setVerdict('wrong');
+      setVerdict(false);
     }
 
     setHex(randomHex())
   }
 
+  const verdictText = verdict ? 'correct' : 'wrong';
+  const className = verdict ? 'guess-correct' : 'guess-wrong';
+
   return (
     <div>
-      <div style={{ backgroundColor: `${hex}`, width: '500px', height: '500px' }}>
-        <p>Streak: {streak} </p>
-        {verdict ? <p>Answer is {verdict} </p> : <></>}
-      </div>
+      <div style={{ backgroundColor: `${hex}`, width: '500px', height: '500px' }}></div>
       <li>
         {options.map(item => (
           <button value={item} onClick={handleClick} key={item}>{item}</button>
         ))}
       </li>
+      <p>Streak: {streak} </p>
+      {verdict == null ? <></> : <p className={className}> Answer is {verdictText} </p>}
     </div>
   )
 }
